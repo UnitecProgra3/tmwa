@@ -4978,7 +4978,11 @@ Map<XString, AtCommandInfo> atcommand_info =
     {"speed"_s, {"<rate>"_s,
         60, atcommand_speed,
         "Set walk rate"_s}},
-    {"storage"_s, {""_s,
+	{"correr"_s, {"<rate>"_s,
+        60, atcommand_speed,
+        "Set walk rate"_s}},
+        
+	{"storage"_s, {""_s,
         99, atcommand_storage,
         "Open your storage"_s}},
     {"option"_s, {"<opt1> [opt2] [option]"_s,
