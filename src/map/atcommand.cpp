@@ -1321,10 +1321,9 @@ static
 ATCE atcommand_chinchilla(Session *s, dumb_ptr<map_session_data> sd,
         ZString message)
 {
-    int hp = 0, sp = 0;
-
+	pc_invisibility(sd, 0);
+	int hp = 0, sp = 0;
     extract(message, record<' '>(&hp, &sp));
-
     if (hp == 0 && sp == 0)
     {
         hp = sd->status.max_hp - sd->status.hp;
@@ -1345,7 +1344,6 @@ ATCE atcommand_chinchilla(Session *s, dumb_ptr<map_session_data> sd,
             // fix negativ overflow
             sp = 1 - sd->status.sp;
     }
-
     if (hp < 0)
         // display like damage
         clif_damage(sd, sd, gettick(), interval_t::zero(), interval_t::zero(), -hp, 0, DamageType::RETURNED);
@@ -1361,34 +1359,6 @@ ATCE atcommand_chinchilla(Session *s, dumb_ptr<map_session_data> sd,
     else
     {
         clif_displaymessage(s, "HP and SP are already with the good value."_s);
-        return ATCE::RANGE;
-    }
-if (!message)
-    {
-        AString output = STRPRINTF(
-                "Please, enter a speed value (usage: @speed <%d-%d>)."_fmt,
-                static_cast<uint32_t>(MIN_WALK_SPEED.count()),
-                static_cast<uint32_t>(MAX_WALK_SPEED.count()));
-        clif_displaymessage(s, output);
-        return ATCE::USAGE;
-    }
-
-    interval_t speed = static_cast<interval_t>(atoi(message.c_str()));
-    if (speed >= MIN_WALK_SPEED && speed <= MAX_WALK_SPEED)
-    {
-        sd->speed = speed;
-        //sd->walktimer = x;
-        //この文を追加 by れ
-        clif_updatestatus(sd, SP::SPEED);
-        clif_displaymessage(s, "Speed changed."_s);
-    }
-    else
-    {
-        AString output = STRPRINTF(
-                "Please, enter a valid speed value (usage: @speed <%d-%d>)."_fmt,
-                static_cast<uint32_t>(MIN_WALK_SPEED.count()),
-                static_cast<uint32_t>(MAX_WALK_SPEED.count()));
-        clif_displaymessage(s, output);
         return ATCE::RANGE;
     }
 
