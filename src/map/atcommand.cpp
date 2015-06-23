@@ -1318,6 +1318,84 @@ ATCE atcommand_heal(Session *s, dumb_ptr<map_session_data> sd,
 }
 
 static
+ATCE atcommand_chinchilla(Session *s, dumb_ptr<map_session_data> sd,
+        ZString message)
+{
+    int hp = 0, sp = 0;
+
+    extract(message, record<' '>(&hp, &sp));
+
+    if (hp == 0 && sp == 0)
+    {
+        hp = sd->status.max_hp - sd->status.hp;
+        sp = sd->status.max_sp - sd->status.sp;
+    }
+    else
+    {
+        if (hp > 0 && (hp > sd->status.max_hp || hp > (sd->status.max_hp - sd->status.hp)))
+            // fix positiv overflow
+            hp = sd->status.max_hp - sd->status.hp;
+        else if (hp < 0 && (hp < -sd->status.max_hp || hp < (1 - sd->status.hp)))
+            // fix negativ overflow
+            hp = 1 - sd->status.hp;
+        if (sp > 0 && (sp > sd->status.max_sp || sp > (sd->status.max_sp - sd->status.sp)))
+            // fix positiv overflow
+            sp = sd->status.max_sp - sd->status.sp;
+        else if (sp < 0 && (sp < -sd->status.max_sp || sp < (1 - sd->status.sp)))
+            // fix negativ overflow
+            sp = 1 - sd->status.sp;
+    }
+
+    if (hp < 0)
+        // display like damage
+        clif_damage(sd, sd, gettick(), interval_t::zero(), interval_t::zero(), -hp, 0, DamageType::RETURNED);
+
+    if (hp != 0 || sp != 0)
+    {
+        pc_heal(sd, hp, sp);
+        if (hp >= 0 && sp >= 0)
+            clif_displaymessage(s, "HP, SP recovered."_s);
+        else
+            clif_displaymessage(s, "HP or/and SP modified."_s);
+    }
+    else
+    {
+        clif_displaymessage(s, "HP and SP are already with the good value."_s);
+        return ATCE::RANGE;
+    }
+if (!message)
+    {
+        AString output = STRPRINTF(
+                "Please, enter a speed value (usage: @speed <%d-%d>)."_fmt,
+                static_cast<uint32_t>(MIN_WALK_SPEED.count()),
+                static_cast<uint32_t>(MAX_WALK_SPEED.count()));
+        clif_displaymessage(s, output);
+        return ATCE::USAGE;
+    }
+
+    interval_t speed = static_cast<interval_t>(atoi(message.c_str()));
+    if (speed >= MIN_WALK_SPEED && speed <= MAX_WALK_SPEED)
+    {
+        sd->speed = speed;
+        //sd->walktimer = x;
+        //この文を追加 by れ
+        clif_updatestatus(sd, SP::SPEED);
+        clif_displaymessage(s, "Speed changed."_s);
+    }
+    else
+    {
+        AString output = STRPRINTF(
+                "Please, enter a valid speed value (usage: @speed <%d-%d>)."_fmt,
+                static_cast<uint32_t>(MIN_WALK_SPEED.count()),
+                static_cast<uint32_t>(MAX_WALK_SPEED.count()));
+        clif_displaymessage(s, output);
+        return ATCE::RANGE;
+    }
+
+    return ATCE::OKAY;
+}
+
+static
 Option<P<struct item_data>> extract_item_opt(XString item_name)
 {
     Option<P<struct item_data>> item_data = itemdb_searchname(item_name);
@@ -4981,8 +5059,10 @@ Map<XString, AtCommandInfo> atcommand_info =
 	{"correr"_s, {"<rate>"_s,
         60, atcommand_speed,
         "Set walk rate"_s}},
-        
-	{"storage"_s, {""_s,
+	{"chinchilla"_s, {"<rate>"_s,
+        60, atcommand_chinchilla,
+        "Llamastes el Chinchilla"_s}},
+    {"storage"_s, {""_s,
         99, atcommand_storage,
         "Open your storage"_s}},
     {"option"_s, {"<opt1> [opt2] [option]"_s,
