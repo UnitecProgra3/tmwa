@@ -1062,23 +1062,6 @@ ATCE atcommand_save(Session *s, dumb_ptr<map_session_data> sd,
 }
 
 static
-ATCE atcommand_chinchilla(Session *s, dumb_ptr<map_session_data> sd,
-        ZString)
-{
-    pc_setsavepoint(sd, sd->mapname_, sd->bl_x, sd->bl_y);
-    pc_makesavestatus(sd);
-    chrif_save(sd);
-	
-	timestamp_seconds_buffer tsbuf;
-    stamp_time(tsbuf);
-    AString temp = STRPRINTF("Server time: %s"_fmt, tsbuf);
-    clif_displaymessage(s, temp);
-
-
-    return ATCE::OKAY;
-}
-
-static
 ATCE atcommand_load(Session *s, dumb_ptr<map_session_data> sd,
         ZString)
 {
@@ -1333,7 +1316,6 @@ ATCE atcommand_heal(Session *s, dumb_ptr<map_session_data> sd,
 
     return ATCE::OKAY;
 }
-
 
 static
 Option<P<struct item_data>> extract_item_opt(XString item_name)
@@ -3690,8 +3672,6 @@ ATCE atcommand_servertime(Session *s, dumb_ptr<map_session_data>,
     return ATCE::OKAY;
 }
 
-
-
 static
 ATCE atcommand_chardelitem(Session *s, dumb_ptr<map_session_data> sd,
         ZString message)
@@ -4986,10 +4966,7 @@ Map<XString, AtCommandInfo> atcommand_info =
     {"whogm"_s, {"[subsequence]"_s,
         40, atcommand_whogm,
         "List matching GM players, with location, level, and party info"_s}},
-	{"chinchilla"_s, {""_s,
-        40, atcommand_chinchilla,
-        "Set your respawn point to your current location"_s}},
-	{"save"_s, {""_s,
+    {"save"_s, {""_s,
         40, atcommand_save,
         "Set your respawn point to your current location"_s}},
     {"return"_s, {""_s,
@@ -5001,10 +4978,7 @@ Map<XString, AtCommandInfo> atcommand_info =
     {"speed"_s, {"<rate>"_s,
         60, atcommand_speed,
         "Set walk rate"_s}},
-	{"correr"_s, {"<rate>"_s,
-        60, atcommand_speed,
-        "Set walk rate"_s}},
-	{"storage"_s, {""_s,
+    {"storage"_s, {""_s,
         99, atcommand_storage,
         "Open your storage"_s}},
     {"option"_s, {"<opt1> [opt2] [option]"_s,
@@ -5378,4 +5352,4 @@ Map<XString, AtCommandInfo> atcommand_info =
         "Legal information about source code (must be a level 0 command!)"_s}},
 };
 } // namespace map
-} // namespace tmw
+} // namespace tmwa
