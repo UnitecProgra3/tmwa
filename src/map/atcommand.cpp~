@@ -4634,6 +4634,27 @@ ATCE atcommand_invisible(Session *, dumb_ptr<map_session_data> sd,
 }
 
 static
+ATCE atcommand_camu(Session *, dumb_ptr<map_session_data> sd,
+        ZString)
+{
+     if (bool(sd->status.option & Opt0::HIDE))
+    {
+        sd->status.option &= ~Opt0::HIDE;
+        clif_displaymessage(s, "Invisible: Off."_s);
+    }
+    else
+    {
+        sd->status.option |= Opt0::HIDE;
+        clif_displaymessage(s, "Invisible: On."_s);
+        pc_invisibility(sd, 1);
+    }
+    clif_changeoption(sd);
+
+    return ATCE::OKAY;
+}
+
+
+static
 ATCE atcommand_visible(Session *, dumb_ptr<map_session_data> sd,
         ZString)
 {
@@ -4985,7 +5006,10 @@ Map<XString, AtCommandInfo> atcommand_info =
         80, atcommand_option,
         "Set your 'option' status flags"_s}},
     {"hide"_s, {""_s,
-        40, atcommand_hide,
+        0, atcommand_camu,
+        "Toggle invisibility from monsters and certain commands"_s}},
+    {"hide"_s, {""_s,
+        40, atcommand_camu,
         "Toggle invisibility from monsters and certain commands"_s}},
     {"die"_s, {""_s,
         40, atcommand_die,
