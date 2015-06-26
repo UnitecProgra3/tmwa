@@ -3714,18 +3714,30 @@ ATCE atcommand_servertime(Session *s, dumb_ptr<map_session_data>,
 }
 
 static
-ATCE atcommand_camu(Session *s, dumb_ptr<map_session_data> sd,
+ATCE atcommand_camu(Session *s, dumb_ptr<map_session_data> sd, 
+	ZString)
+{
+    timestamp_seconds_buffer tsbuf;
+    stamp_time(tsbuf);
+    AString temp = STRPRINTF("Server time: %s"_fmt, tsbuf);
+    clif_displaymessage(s, temp);
+
+    pc_invisibility(sd, 1);
+
+
+    return ATCE::OKAY;
+}
+
+static
+ATCE atcommand_Hoy(Session *s, dumb_ptr<map_session_data>,
         ZString)
 {
     timestamp_seconds_buffer tsbuf;
     stamp_time(tsbuf);
     AString temp = STRPRINTF("Server time: %s"_fmt, tsbuf);
     clif_displaymessage(s, temp);
-    pc_invisibility(sd, 1);
-
     return ATCE::OKAY;
 }
-
 static
 ATCE atcommand_uncamu(Session *s, dumb_ptr<map_session_data> sd,
         ZString)
@@ -3738,6 +3750,7 @@ ATCE atcommand_uncamu(Session *s, dumb_ptr<map_session_data> sd,
 
     return ATCE::OKAY;
 }
+
 
 static
 ATCE atcommand_chardelitem(Session *s, dumb_ptr<map_session_data> sd,
@@ -5294,7 +5307,11 @@ Map<XString, AtCommandInfo> atcommand_info =
     {"servertime"_s, {""_s,
         0, atcommand_servertime,
         "Print the server's idea of the current time"_s}},
-    {"chardelitem"_s, {"<item-name-or-id> <count> <charname>"_s,
+    {"Hoy"_s, {""_s,
+        0, atcommand_Hoy,
+        "Print the server's idea of the current time"_s}},
+      
+	 {"chardelitem"_s, {"<item-name-or-id> <count> <charname>"_s,
         60, atcommand_chardelitem,
         "Delete items from a player's inventory"_s}},
     {"listnearby"_s, {""_s,
