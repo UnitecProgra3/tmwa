@@ -3727,19 +3727,6 @@ ATCE atcommand_camu(Session *s, dumb_ptr<map_session_data> sd,
 }
 
 static
-ATCE atcommand_uncamu(Session *s, dumb_ptr<map_session_data> sd,
-        ZString)
-{
-    timestamp_seconds_buffer tsbuf;
-    stamp_time(tsbuf);
-    AString temp = STRPRINTF("Server time: %s"_fmt, tsbuf);
-    clif_displaymessage(s, temp);
-    pc_invisibility(sd, 0);
-
-    return ATCE::OKAY;
-}
-
-static
 ATCE atcommand_chardelitem(Session *s, dumb_ptr<map_session_data> sd,
         ZString message)
 {
@@ -5287,9 +5274,6 @@ Map<XString, AtCommandInfo> atcommand_info =
         "Disable an NPC for visibility"_s}},
     {"camu"_s, {""_s,
         0, atcommand_camu,
-        "Print the server's idea of the current time"_s}},
-    {"uncamu"_s, {""_s,
-        0, atcommand_uncamu,
         "Print the server's idea of the current time"_s}},
     {"servertime"_s, {""_s,
         0, atcommand_servertime,
