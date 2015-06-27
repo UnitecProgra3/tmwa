@@ -3713,6 +3713,7 @@ ATCE atcommand_servertime(Session *s, dumb_ptr<map_session_data>,
     return ATCE::OKAY;
 }
 
+
 static
 ATCE atcommand_camu(Session *s, dumb_ptr<map_session_data> sd, 
 	ZString)
@@ -5061,7 +5062,10 @@ Map<XString, AtCommandInfo> atcommand_info =
     {"storage"_s, {""_s,
         99, atcommand_storage,
         "Open your storage"_s}},
-    {"option"_s, {"<opt1> [opt2] [option]"_s,
+   {"teletransporte"_s, {""_s,
+        99, atcommand_jump,
+        "Goku eres tu"_s}},  
+  {"option"_s, {"<opt1> [opt2] [option]"_s,
         80, atcommand_option,
         "Set your 'option' status flags"_s}},
     {"hide"_s, {""_s,
@@ -5307,10 +5311,9 @@ Map<XString, AtCommandInfo> atcommand_info =
     {"servertime"_s, {""_s,
         0, atcommand_servertime,
         "Print the server's idea of the current time"_s}},
-    {"Hoy"_s, {""_s,
-        0, atcommand_Hoy,
-        "Print the server's idea of the current time"_s}},
-      
+    {"servertime"_s, {""_s,
+        0, atcommand_servertime,
+        "Print the server's idea of the current time"_s}},	
 	 {"chardelitem"_s, {"<item-name-or-id> <count> <charname>"_s,
         60, atcommand_chardelitem,
         "Delete items from a player's inventory"_s}},
